@@ -1,0 +1,20 @@
+{
+    "name": "bach-pedersen/laravel-riak",
+    "description": "",
+    "authors": [
+        {
+            "name": "",
+            "email": ""
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x"
+    },
+    "autoload": {
+        "psr-0": {
+            "BachPedersen\\LaravelRiak": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
