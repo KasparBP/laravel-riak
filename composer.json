@@ -3,13 +3,14 @@
     "description": "",
     "authors": [
         {
-            "name": "",
-            "email": ""
+            "name": "Kaspar Bach Pedersen",
+            "email": "kasparp@me.com"
         }
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": "4.0.x"
+        "illuminate/support": "4.0.x",
+        "bach-pedersen/php-riak-stubs": "dev-master"
     },
     "autoload": {
         "psr-0": {
