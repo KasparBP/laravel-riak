@@ -1,6 +1,7 @@
 <?php namespace BachPedersen\LaravelRiak;
 
 use Illuminate\Support\ServiceProvider;
+use Riak\Connection;
 
 class RiakServiceProvider extends ServiceProvider {
 
@@ -11,6 +12,16 @@ class RiakServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = true;
 
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->package('bach-pedersen/laravel-riak');
+    }
+
 	/**
 	 * Register the service provider.
 	 *
@@ -18,7 +29,11 @@ class RiakServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+        $this->app['riak'] = $this->app->share(function($app)
+        {
+            $riakConfig = $app['config']['database.riak'];
+            return new Connection($riakConfig);
+        });
 	}
 
 	/**
