@@ -38,10 +38,23 @@ Also the service provider should be registered in your app/config/app.php file, 
 ),
 ```  
 
+##Usage  
+To get a Riak\Connection, simply ask the app for the instance.  
+```PHP
+/** @var $riak \Riak\Connection */
+$riak = $this->app['riak'];
+
+// or
+/** @var $riak \Riak\Connection */
+$riak = App::make('riak');
+
+```  
+  
+
 ##Cache provider
 There is also a caching provider included that can be activated if desired.  
 To active cache provider do the following:  
-Add provider in app
+1: Add provider in app
 ```PHP
 /*
 // File: app/config/app.php
@@ -51,7 +64,7 @@ Add provider in app
         ...
 ),
 ```  
-Change the default cache driver and set the name of the bucket where you want the cache to be stored, like this:  
+2: Change the default cache driver and set the name of the bucket where you want the cache to be stored, like this:  
 ```PHP
 /*
 // File: app/config/cache.php
@@ -64,18 +77,6 @@ Change the default cache driver and set the name of the bucket where you want th
 ##Session provider
 A Riak session provider is not done yet, check back later.  
   
-##Usage  
-To get a Riak\Connection, simply ask the app for the instance.  
-```PHP
-/** @var $riak \Riak\Connection */
-$riak = $this->app['riak'];
-
-// or
-/** @var $riak \Riak\Connection */
-$riak = App::make('riak');
-
-```  
-
 ##Links  
 composer homepage: http://getcomposer.org/
 php_riak pecl page: http://pecl.php.net/package/riak  
