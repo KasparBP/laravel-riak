@@ -53,20 +53,18 @@ $riak = App::make('riak');
 
 ##Cache provider
 There is also a caching provider included that can be activated if desired.  
-To active cache provider do the following:  
+To activate the caching provider, make sure the normal Riak provider is configured like above, and then do the following:  
 1: Add provider in app
 ```PHP
-/*
 // File: app/config/app.php
 'providers' => array(
         ...
-        'BachPedersen\LaravelRiak\RiakServiceProvider',
+        'BachPedersen\LaravelRiak\Cache\RiakCacheServiceProvider',
         ...
 ),
 ```  
 2: Change the default cache driver and set the name of the bucket where you want the cache to be stored, like this:  
 ```PHP
-/*
 // File: app/config/cache.php
     ...
 	'driver' => 'riak',
