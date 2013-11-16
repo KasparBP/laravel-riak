@@ -99,4 +99,15 @@ class RiakCacheStoreTest extends \PHPUnit_Framework_TestCase
         $gotten = $this->store->get('forgetMe');
         $this->assertNull($gotten);
     }
+
+    public function testDeleteLotsOfCacheData()
+    {
+        echo "put start: ".time().PHP_EOL;
+        for ($i=0;$i<1000; ++$i) {
+            $this->store->put("key$i", $i, 100);
+        }
+        echo "flush start: ".time().PHP_EOL;
+        $this->store->flush();
+        echo "finished at: ".time().PHP_EOL;
+    }
 } 

@@ -15,21 +15,33 @@
    limitations under the License.
 */
 
-namespace BachPedersen\LaravelRiak\Session;
+namespace BachPedersen\LaravelRiak\Common;
 
-use Illuminate\Session\SessionServiceProvider;
 
-class RiakSessionServiceProvider extends SessionServiceProvider
+use Riak\Bucket;
+use Riak\Input\DeleteInput;
+use Riak\Input\GetInput;
+use Riak\Output\KeyStreamOutput;
+
+class RiakDeleteAllKeysStreamOutput implements KeyStreamOutput
 {
-    public function register()
+    /**
+     * @var \Riak\Bucket
+     */
+    private $bucket;
+
+    public function __construct(Bucket $bucket)
     {
-        parent::register();
-        $this->app['session.manager']->extend('riak', function($app)
-        {
-            // TODO
-            /** @var $riak Connection */
-            $riak = $app['riak'];
-            $bucketName = $app['config']['session.bucket'];
-        });
+        $this->bucket = $bucket;
     }
-} 
+
+    /**
+     * @param string $key received a key from riak
+     * @return void
+     */
+    public function process($key)
+    {
+        Operations::deleteWithVClock($this->bucket, $key);
+    }
+
+}

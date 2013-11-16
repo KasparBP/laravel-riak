@@ -17,12 +17,12 @@
 
 namespace BachPedersen\LaravelRiak\Cache;
 
+use BachPedersen\LaravelRiak\Common\Operations;
 use Illuminate\Cache\Section;
 use Illuminate\Cache\StoreInterface;
 use Riak\Bucket;
 use Riak\Connection;
 use Riak\Input\DeleteInput;
-use Riak\Input\GetInput;
 use Riak\Input\PutInput;
 use Riak\Object;
 use Riak\ObjectList;
@@ -135,7 +135,7 @@ class RiakStore implements StoreInterface
      */
     public function forget($key)
     {
-        $this->performDelete($key);
+        Operations::deleteWithVClock($this->bucket, $key);
     }
 
     /**
@@ -145,10 +145,7 @@ class RiakStore implements StoreInterface
      */
     public function flush()
     {
-        $keys = $this->bucket->getKeyList();
-        foreach ($keys as $key) {
-            $this->performDelete($key);
-        }
+        Operations::emptyBucket($this->bucket);
     }
 
     /**
@@ -246,19 +243,6 @@ class RiakStore implements StoreInterface
     }
 
     /**
-     * Does a get head and extracts the vclock
-     * @param $key
-     * @return null|string
-     */
-    private function getVClock($key)
-    {
-        $getInput = new GetInput();
-        $getInput->setReturnHead(true);
-        $getOutput = $this->bucket->get($key, $getInput);
-        return $getOutput->getVClock();
-    }
-
-    /**
      * @param string $key
      * @param int $value
      */
@@ -288,7 +272,7 @@ class RiakStore implements StoreInterface
     private function performPut($key, $value, $minutes)
     {
         // Start by doing a get head so we are sure to use latest vclock
-        $vClock = $this->getVClock($key);
+        $vClock = Operations::getVClock($this->bucket, $key);
 
         $obj = new Object($key);
         $putTimeStamp = time();
@@ -305,14 +289,4 @@ class RiakStore implements StoreInterface
         $this->bucket->put($obj, $putInput);
     }
 
-    /**
-     * @param $key
-     */
-    private function performDelete($key)
-    {
-        $vClock = $this->getVClock($key);
-        $delInput = new DeleteInput();
-        $delInput->setVClock($vClock);
-        $this->bucket->delete($key, $delInput);
-    }
 }
