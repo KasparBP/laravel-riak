@@ -17,6 +17,7 @@
 
 namespace BachPedersen\LaravelRiak\Cache;
 
+use Illuminate\Cache\Section;
 use Illuminate\Cache\StoreInterface;
 use Riak\Bucket;
 use Riak\Connection;
@@ -158,7 +159,7 @@ class RiakStore implements StoreInterface
      */
     public function section($name)
     {
-        return new RiakSection($this, $name);
+        return new Section($this, $name);
     }
 
     /**

@@ -87,4 +87,16 @@ class RiakCacheStoreTest extends \PHPUnit_Framework_TestCase
         $gotten = $this->store->get('testDelVal');
         $this->assertNull($gotten);
     }
+
+    public function testForget()
+    {
+        $value = "forgetMe";
+        // Save for 0 minutes = should be deleted on first get
+        $this->store->put('forgetMe', $value, 10);
+        $gotten = $this->store->get('forgetMe');
+        $this->assertEquals($value, $gotten);
+        $this->store->forget('forgetMe');
+        $gotten = $this->store->get('forgetMe');
+        $this->assertNull($gotten);
+    }
 } 
