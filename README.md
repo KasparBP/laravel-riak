@@ -38,12 +38,6 @@ Also the service provider should be registered in your app/config/app.php file, 
 ),
 ```  
 
-##Cache provider
-A Riak caching provider is not done yet, check back later.  
-  
-##Session provider
-A Riak session provider is not done yet, check back later.  
-  
 ##Usage  
 To get a Riak\Connection, simply ask the app for the instance.  
 ```PHP
@@ -56,6 +50,12 @@ $riak = App::make('riak');
 
 ```  
 
+##Cache provider
+A Riak caching provider is not done yet, check back later.  
+  
+##Session provider
+A Riak session provider is not done yet, check back later.  
+  
 ##Links  
 composer homepage: http://getcomposer.org/
 php_riak pecl page: http://pecl.php.net/package/riak  
