@@ -39,7 +39,27 @@ Also the service provider should be registered in your app/config/app.php file, 
 ```  
 
 ##Cache provider
-A Riak caching provider is not done yet, check back later.  
+There is also a caching provider included that can be activated if desired.  
+To active cache provider do the following:  
+Add provider in app
+```PHP
+/*
+// File: app/config/app.php
+'providers' => array(
+        ...
+        'BachPedersen\LaravelRiak\RiakServiceProvider',
+        ...
+),
+```  
+Change the default cache driver and set the name of the bucket where you want the cache to be stored, like this:  
+```PHP
+/*
+// File: app/config/cache.php
+    ...
+	'driver' => 'riak',
+	'bucket' => 'laravel.cache',
+    ...
+```  
   
 ##Session provider
 A Riak session provider is not done yet, check back later.  

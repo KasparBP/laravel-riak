@@ -217,7 +217,7 @@ class RiakStore implements StoreInterface
         if (isset($metadataMap[self::RIAK_EXPIRES_NAME])) {
             // Check if key object should be deleted
             $expireTime = intval($metadataMap[self::RIAK_EXPIRES_NAME]);
-            if ($expireTime < $now) {
+            if ($expireTime <= $now) {
                 // The value expired delete it from riak and return nothing
                 $delInput = new DeleteInput();
                 $delInput->setVClock($vClock);

@@ -37,7 +37,6 @@ class RiakCacheStoreTest extends \PHPUnit_Framework_TestCase
         Helper::disableMults($bucket);
 
         $this->store = new \BachPedersen\LaravelRiak\Cache\RiakStore($conn, $bucket);
-
         $this->store->flush();
     }
 
@@ -78,5 +77,14 @@ class RiakCacheStoreTest extends \PHPUnit_Framework_TestCase
         $this->store->decrement('testIncDec', 5);
         $gotten = $this->store->get('testIncDec');
         $this->assertEquals($value-5, $gotten);
+    }
+
+    public function testDeletesTooOld()
+    {
+        $value = "dummy";
+        // Save for 0 minutes = should be deleted on first get
+        $this->store->put('testDelVal', $value, 0);
+        $gotten = $this->store->get('testDelVal');
+        $this->assertNull($gotten);
     }
 } 

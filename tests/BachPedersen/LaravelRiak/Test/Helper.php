@@ -20,9 +20,10 @@ class Helper {
     public static function disableMults(\Riak\Bucket $bucket)
     {
         $propsList = new \Riak\BucketPropertyList();
-        $propsList->setAllowMult(true);
+        $propsList->setAllowMult(false);
         $bucket->setPropertyList($propsList);
     }
+
 
     public static function printRiakDebugInfo()
     {
