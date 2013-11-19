@@ -1,6 +1,6 @@
 {
     "name": "bach-pedersen/laravel-riak",
-    "description": "",
+    "description": "Riak providers for Riak Connection, Cache and Session",
     "authors": [
         {
             "name": "Kaspar Bach Pedersen",
