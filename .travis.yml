@@ -11,7 +11,7 @@ before_install:
   - "yes n | sudo apt-get install riak"
   - ulimit -n 2048
   - sudo service riak start
-  - pecl install riak-beta
+  - pecl install riak
 before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/TriKaspar/laravel-riak.png?branch=master)](https://travis-ci.org/TriKaspar/laravel-riak)
+[![Build Status](https://travis-ci.org/TriKaspar/laravel-riak.png?branch=master)](https://travis-ci.org/TriKaspar/laravel-riak)[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/TriKaspar/laravel-riak/badges/quality-score.png?s=b914de3041d326452b9a55d99231654b7ce1325b)](https://scrutinizer-ci.com/g/TriKaspar/laravel-riak/)
 #laravel-riak  
 Simple Riak provider for Laravel.  
 
