@@ -20,6 +20,7 @@ namespace BachPedersen\LaravelRiak\Cache;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\ServiceProvider;
 use Riak\Connection;
+use Cache;
 
 class RiakCacheServiceProvider extends ServiceProvider
 {
@@ -29,7 +30,7 @@ class RiakCacheServiceProvider extends ServiceProvider
     {
         $this->package('bach-pedersen/laravel-riak');
 
-        $this->app['cache']->extend('riak', function($app)
+        Cache::extend('riak', function($app)
         {
             /** @var $riak Connection */
             $riak = $app['riak'];

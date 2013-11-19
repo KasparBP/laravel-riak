@@ -17,19 +17,19 @@
 
 namespace BachPedersen\LaravelRiak\Session;
 
+use Illuminate\Session\CacheBasedSessionHandler;
 use Illuminate\Session\SessionServiceProvider;
+use Session;
 
 class RiakSessionServiceProvider extends SessionServiceProvider
 {
     public function register()
     {
         parent::register();
-        $this->app['session.manager']->extend('riak', function($app)
+        Session::extend('riak', function($app)
         {
-            // TODO
-            /** @var $riak Connection */
-            $riak = $app['riak'];
-            $bucketName = $app['config']['session.bucket'];
+            $lifetime = $this->app['config']['session.lifetime'];
+            return new CacheBasedSessionHandler($this->app['cache']->driver('riak'), $lifetime);
         });
     }
 } 
