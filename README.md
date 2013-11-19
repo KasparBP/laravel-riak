@@ -73,7 +73,24 @@ To activate the caching provider, make sure the normal Riak provider is configur
 ```  
   
 ##Session provider
-A Riak session provider is not done yet, check back later.  
+The session provider is built on top of the cache provider so both that and the regular riak provider should be added in app.php  
+Beside that the session provider should be added like this:  
+```PHP
+// File: app/config/app.php
+'providers' => array(
+        ...
+        'BachPedersen\LaravelRiak\Session\RiakSessionServiceProvider',
+        ...
+),
+```  
+And the same way as the cache provider the following settings should set in session.php  
+```PHP
+// File: app/config/session.php
+    ...
+	'driver' => 'riak',
+	'bucket' => 'laravel.session',
+    ...
+```  
   
 ##Links  
 composer homepage: http://getcomposer.org/
