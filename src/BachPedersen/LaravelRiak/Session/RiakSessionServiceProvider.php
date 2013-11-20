@@ -34,8 +34,8 @@ class RiakSessionServiceProvider extends SessionServiceProvider
         parent::register();
         Session::extend('riak', function($app)
         {
-            $lifetime = $this->app['config']['session.lifetime'];
-            return new CacheBasedSessionHandler($this->app['cache']->driver('riak'), $lifetime);
+            $lifetime = $app['config']['session.lifetime'];
+            return new CacheBasedSessionHandler($app['cache']->driver('riak'), $lifetime);
         });
     }
 } 

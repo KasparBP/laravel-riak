@@ -88,7 +88,6 @@ And the same way as the cache provider the following settings should set in sess
 // File: app/config/session.php
     ...
 	'driver' => 'riak',
-	'bucket' => 'laravel.session',
     ...
 ```  
   
