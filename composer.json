@@ -1,6 +1,8 @@
 {
     "name": "bach-pedersen/laravel-riak",
     "description": "Riak providers for Riak Connection, Cache and Session",
+    "keywords": ["riak", "session", "cache", "laravel"],
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Kaspar Bach Pedersen",
