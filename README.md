@@ -93,7 +93,7 @@ And the same way as the cache provider the following settings should set in sess
 ```  
   
 ##Links  
-composer homepage: http://getcomposer.org/
+composer homepage: http://getcomposer.org/  
 php_riak pecl page: http://pecl.php.net/package/riak  
-php_riak source: https://github.com/TriKaspar/php_riak
-php_riak documentation: http://phpriak.bachpedersen.dk/
+php_riak source: https://github.com/TriKaspar/php_riak  
+php_riak documentation: http://phpriak.bachpedersen.dk/  
