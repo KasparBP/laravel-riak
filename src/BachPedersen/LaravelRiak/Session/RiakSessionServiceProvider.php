@@ -23,6 +23,12 @@ use Session;
 
 class RiakSessionServiceProvider extends SessionServiceProvider
 {
+
+    public function boot()
+    {
+        $this->package('bach-pedersen/laravel-riak');
+    }
+
     public function register()
     {
         parent::register();

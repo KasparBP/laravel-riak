@@ -29,7 +29,15 @@ class RiakCacheServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->package('bach-pedersen/laravel-riak');
+    }
 
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
         Cache::extend('riak', function($app)
         {
             /** @var $riak Connection */
@@ -40,14 +48,5 @@ class RiakCacheServiceProvider extends ServiceProvider
             }
             return new Repository(new RiakStore($riak, $riak->getBucket($bucketName)));
         });
-    }
-
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
     }
 }
