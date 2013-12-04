@@ -185,19 +185,26 @@ class RiakStore implements StoreInterface
             $objectList = $getOutput->getObjectList();
             /** @var $obj Object */
             foreach ($objectList as $obj) {
-                $metadataMap = $obj->getMetadataMap();
-                if (isset($metadataMap[self::RIAK_TIMESTAMP_NAME])) {
-                    $ts = intval($metadataMap[self::RIAK_TIMESTAMP_NAME]);
-                    if ($ts > $newestStamp) {
-                        $newestStamp = $ts;
-                        $result = $obj;
+                if (!$obj->isDeleted()) {
+                    $metadataMap = $obj->getMetadataMap();
+                    if (isset($metadataMap[self::RIAK_TIMESTAMP_NAME])) {
+                        $ts = intval($metadataMap[self::RIAK_TIMESTAMP_NAME]);
+                        if ($ts > $newestStamp) {
+                            $newestStamp = $ts;
+                            $result = $obj;
+                        }
                     }
                 }
             }
-            $putInput = new PutInput();
-            $this->bucket->put($result, $putInput->setVClock($vClock));
+            if (!is_null($result)) {
+                $putInput = new PutInput();
+                $this->bucket->put($result, $putInput->setVClock($vClock));
+            }
         } else {
-            $result = $getOutput->getFirstObject();
+            $obj = $getOutput->getFirstObject();
+            if (!is_null($obj) && !$obj->isDeleted()) {
+                $result = $obj;
+            }
         }
         return $result;
     }
