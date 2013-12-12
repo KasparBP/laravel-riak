@@ -29,20 +29,14 @@ class RiakCacheStoreTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        Helper::printRiakDebugInfo();
-
-        // TODO Might want to move the host/port setup to a better place
         $conn = new \Riak\Connection('localhost');
         $bucket = $conn->getBucket(self::TEST_BUCKET_NAME);
-        Helper::disableMults($bucket);
-
+        $bucketProperties = new \Riak\BucketPropertyList();
+        $bucketProperties->setAllowMult(false)
+                         ->setLastWriteWins(false);
+        $bucket->setPropertyList($bucketProperties);
         $this->store = new \BachPedersen\LaravelRiak\Cache\RiakStore($conn, $bucket);
         $this->store->flush();
-    }
-
-    public function tearDown()
-    {
-        Helper::printRiakDebugInfo();
     }
 
     public function testSimpleGetNotFound()

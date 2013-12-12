@@ -38,4 +38,15 @@ class RiakSessionServiceProvider extends SessionServiceProvider
             return new CacheBasedSessionHandler($app['cache']->driver('riak'), $lifetime);
         });
     }
+
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('session');
+    }
 } 

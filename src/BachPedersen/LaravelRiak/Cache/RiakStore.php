@@ -17,7 +17,6 @@
 
 namespace BachPedersen\LaravelRiak\Cache;
 
-use BachPedersen\LaravelRiak\Common\Operations;
 use Illuminate\Cache\Section;
 use Illuminate\Cache\StoreInterface;
 use Riak\Bucket;
@@ -37,8 +36,8 @@ use Riak\Output\GetOutput;
  */
 class RiakStore implements StoreInterface
 {
-    const RIAK_EXPIRES_NAME = 'exp';
-    const RIAK_TIMESTAMP_NAME = 'ts';
+    const RIAK_EXPIRES_NAME = 'exp_int';
+    const RIAK_TIMESTAMP_NAME = 'ts_int';
 
     /**
      * @var Connection
@@ -68,6 +67,7 @@ class RiakStore implements StoreInterface
      */
     public function get($key)
     {
+        $vClock = null;
         $object = $this->getObject($key, $vClock);
         if (!is_null($object)) {
             $content = $object->getContent();
@@ -135,7 +135,7 @@ class RiakStore implements StoreInterface
      */
     public function forget($key)
     {
-        Operations::deleteWithVClock($this->bucket, $key);
+        $this->bucket->delete($key);
     }
 
     /**
@@ -145,7 +145,13 @@ class RiakStore implements StoreInterface
      */
     public function flush()
     {
-        Operations::emptyBucket($this->bucket);
+        $to = time() + 1;
+        $keys = $this->bucket->index(self::RIAK_TIMESTAMP_NAME, "0", "$to");
+        if (isset($keys)) {
+            foreach ($keys as $key) {
+                $this->forget($key);
+            }
+        }
     }
 
     /**
@@ -170,63 +176,21 @@ class RiakStore implements StoreInterface
     }
 
     /**
-     * This function resolves conflicts by looking at timestamp.
-     * @param GetOutput $getOutput
-     * @param $vClock
-     * @return Object|null
-     */
-    private function resolveAndGetFirst(GetOutput $getOutput, &$vClock) {
-        /** @var $result Object */
-        $result = null;
-        $vClock = $getOutput->getVClock();
-        if ($getOutput->hasSiblings()) {
-            $newestStamp = 0;
-            /** @var $objectList ObjectList */
-            $objectList = $getOutput->getObjectList();
-            /** @var $obj Object */
-            foreach ($objectList as $obj) {
-                if (!$obj->isDeleted()) {
-                    $metadataMap = $obj->getMetadataMap();
-                    if (isset($metadataMap[self::RIAK_TIMESTAMP_NAME])) {
-                        $ts = intval($metadataMap[self::RIAK_TIMESTAMP_NAME]);
-                        if ($ts > $newestStamp) {
-                            $newestStamp = $ts;
-                            $result = $obj;
-                        }
-                    }
-                }
-            }
-            if (!is_null($result)) {
-                $putInput = new PutInput();
-                $this->bucket->put($result, $putInput->setVClock($vClock));
-            }
-        } else {
-            $obj = $getOutput->getFirstObject();
-            if (!is_null($obj) && !$obj->isDeleted()) {
-                $result = $obj;
-            }
-        }
-        return $result;
-    }
-
-    /**
      * @param \Riak\Object|null $object
-     * @param string $vClock
      * @param $now
      * @return Object|null returns the object or null if deleted
      */
-    private function deleteIfExpired($object, $vClock, $now) {
+    private function deleteIfExpired($object, $now) {
         if (is_null($object)) return null;
+        if ($object->isDeleted()) return null;
 
-        $metadataMap = $object->getMetadataMap();
-        if (isset($metadataMap[self::RIAK_EXPIRES_NAME])) {
+        $indexMap = $object->getIndexMap();
+        if (isset($indexMap[self::RIAK_EXPIRES_NAME])) {
             // Check if key object should be deleted
-            $expireTime = intval($metadataMap[self::RIAK_EXPIRES_NAME]);
+            $expireTime = intval($indexMap[self::RIAK_EXPIRES_NAME]);
             if ($expireTime <= $now) {
                 // The value expired delete it from riak and return nothing
-                $delInput = new DeleteInput();
-                $delInput->setVClock($vClock);
-                $this->bucket->delete($object, $delInput);
+                $this->bucket->delete($object);
                 return null;
             }
         }
@@ -237,15 +201,14 @@ class RiakStore implements StoreInterface
      * Get the contents of a key, this function will make sure the content is delete if too old and resolved if it
      * has conflicts.
      * @param string $key
-     * @param $vClock
      * @return null|\Riak\Object
      */
-    private function getObject($key, &$vClock)
+    private function getObject($key)
     {
         $getOutput = $this->bucket->get($key);
         /** @var $obj \Riak\Object */
-        $obj = $this->resolveAndGetFirst($getOutput, $vClock);
-        $obj = $this->deleteIfExpired($obj, $vClock, time());
+        $obj = $getOutput->getFirstObject();
+        $obj = $this->deleteIfExpired($obj, time());
         return $obj;
     }
 
@@ -255,6 +218,7 @@ class RiakStore implements StoreInterface
      */
     private function mutateNumeric($key, $value)
     {
+        $vClock = null;
         $object = $this->getObject($key, $vClock);
         $newValue = $value;
         if (!is_null($object)) {
@@ -262,13 +226,8 @@ class RiakStore implements StoreInterface
             if (is_string($content) && strlen($content) > 0) {
                 $newValue = intval(unserialize($content)) + $value;
             }
-        } else {
-            $object = new Object($key);
         }
-        $object->setContent(serialize($newValue));
-        $putInput = new PutInput();
-        $putInput->setVClock($vClock);
-        $this->bucket->put($object, $putInput);
+        $this->performPut($key, $newValue);
     }
 
     /**
@@ -276,24 +235,17 @@ class RiakStore implements StoreInterface
      * @param mixed $value
      * @param int|null $minutes
      */
-    private function performPut($key, $value, $minutes)
+    private function performPut($key, $value, $minutes = null)
     {
-        // Start by doing a get head so we are sure to use latest vclock
-        $vClock = Operations::getVClock($this->bucket, $key);
-
         $obj = new Object($key);
         $putTimeStamp = time();
         if (!is_null($minutes)) {
             // Save a timestamp for when when this value expires.
-            $obj->addMetadata(self::RIAK_EXPIRES_NAME, $putTimeStamp + ($minutes * 60));
+            $obj->addIndex(self::RIAK_EXPIRES_NAME, $putTimeStamp + ($minutes * 60));
         }
-        // Save the put time as well, if for some reason mults have been enabled on the bucket, we use this for resolving.
-        $obj->addMetadata(self::RIAK_TIMESTAMP_NAME, $putTimeStamp);
+        $obj->addIndex(self::RIAK_TIMESTAMP_NAME, $putTimeStamp);
         $obj->setContent(serialize($value));
-
-        $putInput = new PutInput();
-        $putInput->setVClock($vClock);
-        $this->bucket->put($obj, $putInput);
+        $this->bucket->put($obj);
     }
 
 }

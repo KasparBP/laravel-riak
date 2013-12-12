@@ -11,8 +11,9 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": "4.0.x",
-        "illuminate/cache": "4.0.x",
+        "illuminate/support": "4.*",
+        "illuminate/cache": "4.*",
+        "illuminate/console": "4.*",
         "php-riak/php-riak-stubs": "1.0.x"
     },
     "require-dev": {

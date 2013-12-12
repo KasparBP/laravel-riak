@@ -17,8 +17,10 @@
 
 namespace BachPedersen\LaravelRiak\Cache;
 
+use BachPedersen\LaravelRiak\Console\BucketInitCommand;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\ServiceProvider;
+use Riak\BucketPropertyList;
 use Riak\Connection;
 use Cache;
 
@@ -48,5 +50,27 @@ class RiakCacheServiceProvider extends ServiceProvider
      */
     public function register()
     {
+    //    $this->registerCommands();
     }
+
+    /**
+     * Register the cache related console commands.
+     *
+     * @return void
+     */
+    public function registerCommands()
+    {
+      /*  $this->app['command.cache.bucket_init'] = $this->app->share(function($app)
+        {
+            $properties = new BucketPropertyList();
+            $properties
+                ->setAllowMult(false)
+                ->setLastWriteWins(false);
+            return new BucketInitCommand('cache:bucket_init', $app['riak'], $app['config']['cache.bucket'], $properties);
+        });
+        $this->commands('command.cache.bucket_init');*/
+    }
+
+
+
 }

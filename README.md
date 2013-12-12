@@ -13,6 +13,11 @@ Add bach-pedersen/laravel-riak to your composer.json like this:
     "bach-pedersen/laravel-riak": "dev-master"
 }
 ```  
+
+##Riak backend  
+The session and cache provider uses secondary indicies which means riak must be configured with eleveldb backend.  
+See http://docs.basho.com/riak/latest/ops/advanced/backends/leveldb/ for more info.  
+  
 ##Configuration  
 Host and port name for Riak should be configured in your app/config/database.php like this:
 ```PHP
@@ -63,6 +68,7 @@ To activate the caching provider, make sure the normal Riak provider is configur
         ...
 ),
 ```  
+
 2: Change the default cache driver and set the name of the bucket where you want the cache to be stored, like this:  
 ```PHP
 // File: app/config/cache.php
@@ -71,6 +77,8 @@ To activate the caching provider, make sure the normal Riak provider is configur
 	'bucket' => 'laravel.cache',
     ...
 ```  
+
+3: Set bucket properties
   
 ##Session provider
 The session provider is built on top of the cache provider so both that and the regular riak provider should be added in app.php  
