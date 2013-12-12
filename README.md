@@ -13,10 +13,6 @@ Add bach-pedersen/laravel-riak to your composer.json like this:
     "bach-pedersen/laravel-riak": "dev-master"
 }
 ```  
-
-##Riak backend  
-The session and cache provider uses secondary indicies which means riak must be configured with eleveldb backend.  
-See http://docs.basho.com/riak/latest/ops/advanced/backends/leveldb/ for more info.  
   
 ##Configuration  
 Host and port name for Riak should be configured in your app/config/database.php like this:
@@ -98,6 +94,15 @@ And the same way as the cache provider the following settings should set in sess
 	'driver' => 'riak',
     ...
 ```  
+
+  
+## Riak configuration
+1: The session and cache provider uses secondary indicies which means riak must be configured with eleveldb backend.  
+See http://docs.basho.com/riak/latest/ops/advanced/backends/leveldb/ for more info.  
+2: Bucket properties should have lastWriteWins=false and allowMult=false, there is a command included to do that automatically, just run cache:bucket:init and they will be set up correctly.  
+```PHP  
+php artisan cache:bucket:init  
+```    
   
 ##Links  
 composer homepage: http://getcomposer.org/  

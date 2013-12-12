@@ -50,7 +50,7 @@ class RiakCacheServiceProvider extends ServiceProvider
      */
     public function register()
     {
-    //    $this->registerCommands();
+        $this->registerCommands();
     }
 
     /**
@@ -60,17 +60,15 @@ class RiakCacheServiceProvider extends ServiceProvider
      */
     public function registerCommands()
     {
-      /*  $this->app['command.cache.bucket_init'] = $this->app->share(function($app)
+        $this->app['command.cache.bucket'] = $this->app->share(function($app)
         {
             $properties = new BucketPropertyList();
             $properties
                 ->setAllowMult(false)
                 ->setLastWriteWins(false);
-            return new BucketInitCommand('cache:bucket_init', $app['riak'], $app['config']['cache.bucket'], $properties);
+            return new BucketInitCommand('cache:bucket:init', $app['riak'], $app['config']['cache.bucket'], $properties);
         });
-        $this->commands('command.cache.bucket_init');*/
+        $this->commands('command.cache.bucket');
     }
-
-
 
 }

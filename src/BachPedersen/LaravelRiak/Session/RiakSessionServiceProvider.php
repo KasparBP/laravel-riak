@@ -17,8 +17,10 @@
 
 namespace BachPedersen\LaravelRiak\Session;
 
+use BachPedersen\LaravelRiak\Console\BucketInitCommand;
 use Illuminate\Session\CacheBasedSessionHandler;
 use Illuminate\Session\SessionServiceProvider;
+use Riak\BucketPropertyList;
 use Session;
 
 class RiakSessionServiceProvider extends SessionServiceProvider
@@ -39,14 +41,4 @@ class RiakSessionServiceProvider extends SessionServiceProvider
         });
     }
 
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return array('session');
-    }
 } 
