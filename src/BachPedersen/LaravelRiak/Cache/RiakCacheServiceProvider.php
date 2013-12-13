@@ -30,7 +30,6 @@ class RiakCacheServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->package('bach-pedersen/laravel-riak');
         Cache::extend('riak', function($app)
         {
             /** @var $riak Connection */
