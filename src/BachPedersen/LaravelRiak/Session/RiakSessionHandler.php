@@ -38,7 +38,7 @@ class RiakSessionHandler implements \SessionHandlerInterface {
     public function __construct(Connection $connection, $bucketName)
     {
         $this->connection = $connection;
-        $this->bucketName = $connection->getBucket($bucketName);
+        $this->bucket = $connection->getBucket($bucketName);
     }
 
     /**
