@@ -17,7 +17,7 @@
 
 /**
  * Class RiakCacheStoreTest
- * This test will most likely only work on Riak 1.4 and above
+ * This test will most only work on Riak 1.4 and above
  */
 class RiakCacheStoreTest extends \PHPUnit_Framework_TestCase
 {
