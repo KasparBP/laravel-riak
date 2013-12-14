@@ -10,7 +10,7 @@ Installation instructions can be found here http://phpriak.bachpedersen.dk/insta
 Add bach-pedersen/laravel-riak to your composer.json like this:  
 ```JSON
 "require": {
-    "bach-pedersen/laravel-riak": "dev-master"
+    "bach-pedersen/laravel-riak": "1.1.0"
 }
 ```  
   
