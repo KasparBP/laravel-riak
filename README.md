@@ -84,7 +84,6 @@ Beside that the session provider should be added like this:
 'providers' => array(
         ...
         'BachPedersen\LaravelRiak\Session\RiakSessionServiceProvider',
-        ...
 ),
 ```  
 And the same way as the cache provider the following settings should set in session.php  
@@ -92,6 +91,7 @@ And the same way as the cache provider the following settings should set in sess
 // File: app/config/session.php
     ...
 	'driver' => 'riak',
+	'bucket' => 'laravel.session',
     ...
 ```  
 
@@ -99,9 +99,10 @@ And the same way as the cache provider the following settings should set in sess
 ## Riak configuration
 1: The session and cache provider uses secondary indicies which means riak must be configured with eleveldb backend.  
 See http://docs.basho.com/riak/latest/ops/advanced/backends/leveldb/ for more info.  
-2: Bucket properties should have lastWriteWins=false and allowMult=false, there is a command included to do that automatically, just run cache:bucket:init and they will be set up correctly.  
+2: Bucket properties for cache and session should have lastWriteWins=false and allowMult=false, there are commands included to do that automatically, just run cache:bucket:init and session:bucket:init and they will be set up correctly.  
 ```PHP  
 php artisan cache:bucket:init  
+php artisan session:bucket:init  
 ```    
   
 ##Links  

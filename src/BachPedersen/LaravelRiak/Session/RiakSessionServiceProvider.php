@@ -17,7 +17,9 @@ limitations under the License.
 
 namespace BachPedersen\LaravelRiak\Session;
 
+use BachPedersen\LaravelRiak\Console\BucketInitCommand;
 use Illuminate\Support\ServiceProvider;
+use Riak\BucketPropertyList;
 use Riak\Connection;
 
 class RiakSessionServiceProvider extends ServiceProvider
@@ -32,5 +34,24 @@ class RiakSessionServiceProvider extends ServiceProvider
             $bucket = $app['config']['session.bucket'];
             return new RiakSessionHandler($riak, $bucket);
         });
+        $this->registerCommands();
     }
-} 
+
+    /**
+     * Register the session related console commands.
+     *
+     * @return void
+     */
+    public function registerCommands()
+    {
+        $this->app['command.session.bucket'] = $this->app->share(function($app)
+        {
+            $properties = new BucketPropertyList();
+            $properties
+                ->setAllowMult(false)
+                ->setLastWriteWins(false);
+            return new BucketInitCommand('session:bucket:init', $app['riak'], $app['config']['session.bucket'], $properties);
+        });
+        $this->commands('command.session.bucket');
+    }
+}

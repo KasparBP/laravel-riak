@@ -16,18 +16,13 @@
 */
 namespace BachPedersen\LaravelRiak;
 
+use BachPedersen\LaravelRiak\Console\BucketInitCommand;
 use Illuminate\Support\ServiceProvider;
+use Riak\BucketPropertyList;
 use Riak\Connection;
 
 class RiakServiceProvider extends ServiceProvider
 {
-
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
 
     /**
      * Bootstrap the application events.
