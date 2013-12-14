@@ -74,7 +74,6 @@ To activate the caching provider, make sure the normal Riak provider is configur
     ...
 ```  
 
-3: Set bucket properties
   
 ##Session provider
 The session provider is built on top of the cache provider so both that and the regular riak provider should be added in app.php  
