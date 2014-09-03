@@ -19,6 +19,7 @@ namespace BachPedersen\LaravelRiak\Cache;
 
 use BachPedersen\LaravelRiak\Console\BucketInitCommand;
 use Illuminate\Cache\Repository;
+use Illuminate\Support\Manager;
 use Illuminate\Support\ServiceProvider;
 use Riak\BucketPropertyList;
 use Riak\Connection;
@@ -30,16 +31,6 @@ class RiakCacheServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        Cache::extend('riak', function($app)
-        {
-            /** @var $riak Connection */
-            $riak = $app['riak'];
-            $bucketName = $app['config']['cache.bucket'];
-            if (!isset($bucketName)) {
-                $bucketName = self::DEFAULT_BUCKET_NAME;
-            }
-            return new Repository(new RiakStore($riak, $riak->getBucket($bucketName)));
-        });
     }
 
     /**
@@ -49,6 +40,18 @@ class RiakCacheServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->resolving('cache', function($cache) {
+            /** @var Manager $cache */
+            $cache->extend('riak', function ($app) {
+                /** @var $riak Connection */
+                $riak = $app['riak'];
+                $bucketName = $app['config']['cache.bucket'];
+                if (!isset($bucketName)) {
+                    $bucketName = self::DEFAULT_BUCKET_NAME;
+                }
+                return new Repository(new RiakStore($riak, $riak->getBucket($bucketName)));
+            });
+        });
         $this->registerCommands();
     }
 
